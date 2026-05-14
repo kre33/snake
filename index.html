@@ -220,7 +220,7 @@
         <canvas id="joystick" width="400" height="120"></canvas>
     </div>
     <div class="tip">
-        <i>游戏区域</i> 滑动 &nbsp;·&nbsp; <i>摇杆</i> 拖拽 &nbsp;·&nbsp; 穿墙 · 不死
+        🕹 拖拽摇杆控制方向 &nbsp;·&nbsp; 穿墙 · 不死
     </div>
 </div>
 
@@ -258,9 +258,9 @@
         var dir = { dx: 1, dy: 0 };
         var trail = [];
 
-        /* 摇杆 - 加大尺寸 */
-        var JR = 55;
-        var JC = { x: 75, y: 60 };
+        /* 摇杆 - 居中加大 */
+        var JR = 82;
+        var JC = { x: 200, y: 55 };
         var knob = { x: JC.x, y: JC.y };
         var joyActive = false;
         var joyId = null;
@@ -452,24 +452,24 @@
                 joyCtx.fill();
             }
 
-            var g = joyCtx.createRadialGradient(knob.x, knob.y, 2, knob.x, knob.y, 18);
+            var g = joyCtx.createRadialGradient(knob.x, knob.y, 2, knob.x, knob.y, 24);
             g.addColorStop(0, '#00d4ff');
             g.addColorStop(1, '#0099cc');
             joyCtx.fillStyle = g;
             joyCtx.beginPath();
-            joyCtx.arc(knob.x, knob.y, 18, 0, Math.PI*2);
+            joyCtx.arc(knob.x, knob.y, 24, 0, Math.PI*2);
             joyCtx.fill();
 
             joyCtx.fillStyle = 'rgba(255,255,255,0.2)';
             joyCtx.beginPath();
-            joyCtx.arc(knob.x - 4, knob.y - 4, 5, 0, Math.PI*2);
+            joyCtx.arc(knob.x - 6, knob.y - 6, 6, 0, Math.PI*2);
             joyCtx.fill();
 
             joyCtx.fillStyle = '#555';
-            joyCtx.font = '11px sans-serif';
-            joyCtx.textAlign = 'left';
+            joyCtx.font = '12px sans-serif';
+            joyCtx.textAlign = 'center';
             joyCtx.textBaseline = 'middle';
-            joyCtx.fillText('🕹 拖拽摇杆', JC.x + JR + 14, JC.y);
+            joyCtx.fillText('🕹', 200, JC.y + JR + 22);
         }
 
         function update() {
@@ -582,36 +582,6 @@
             var len = Math.sqrt(dir.dx*dir.dx + dir.dy*dir.dy);
             if (len > 0) { dir.dx /= len; dir.dy /= len; }
         }
-
-        canvas.addEventListener('touchstart', function(e){
-            if (!started || over || paused || joyActive) return;
-            e.preventDefault();
-            var rect = canvas.getBoundingClientRect();
-            var t = e.touches[0];
-            var mx = (t.clientX - rect.left) * (BOARD_PX / rect.width);
-            var my = (t.clientY - rect.top) * (BOARD_PX / rect.height);
-            var head = snake[0];
-            if (head) {
-                var dx = mx - head.x, dy = my - head.y;
-                var dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist > 5) { dir.dx = dx/dist; dir.dy = dy/dist; }
-            }
-        }, { passive: false });
-
-        canvas.addEventListener('touchmove', function(e){
-            if (!started || over || paused || joyActive) return;
-            e.preventDefault();
-            var rect = canvas.getBoundingClientRect();
-            var t = e.touches[0];
-            var mx = (t.clientX - rect.left) * (BOARD_PX / rect.width);
-            var my = (t.clientY - rect.top) * (BOARD_PX / rect.height);
-            var head = snake[0];
-            if (head) {
-                var dx = mx - head.x, dy = my - head.y;
-                var dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist > 5) { dir.dx = dx/dist; dir.dy = dy/dist; }
-            }
-        }, { passive: false });
 
         function onJoyDown(e) {
             if (!started || over || paused) return;
